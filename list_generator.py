@@ -9,12 +9,14 @@ class ListGerator:
         """
             - Gera uma lista ordenada
         """
+        rd.seed(1)
         return sorted([rd.randint(0, size) for _ in range(size)])
 
     def disordered(self, size: int) -> list:
         """
             - gera uma lista desordenada
         """
+        rd.seed(2)
         list_ = [rd.randint(0, size) for _ in range(size)]
         
         repeating = len(set(list_))
@@ -32,6 +34,7 @@ class ListGerator:
         """ 
             - Gera uma lista em ordem decrescente 
         """
+        rd.seed(3)
         return sorted([rd.randint(0, size) for _ in range(size)], reverse=True)
         
                 
@@ -43,6 +46,7 @@ class ListGerator:
             intervalo dos elementos vai de 0 ao (tamanho da lista - 1)
             - Não gera lista vazia, sempre será um range de 1.
         """
+        rd.seed(4)
         list_ = rd.choices(range(size - 1 if size > 1 else 1), k=size) 
 
         return list_
@@ -51,12 +55,14 @@ class ListGerator:
         """
             - Gera uma lista com números positivos e negativos
         """
+        rd.seed(5)
         return [rd.randint(-size, size) for _ in range(size)]
     
     def all_equal(self, size: int, value: int = 100) -> list:
         """
             Gera uma lista onde todos os elementos são iguais 
         """
+        rd.seed(6)
         return [value] * size
     
     def empty(self) -> list:
