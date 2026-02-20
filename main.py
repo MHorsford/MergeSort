@@ -84,7 +84,7 @@ def main():
     lg = ListGerator()
 
     # tamanhos e repetições (ajuste conforme seu PC/tempo)
-    sizes = [10, 20, 40, 80, 160, 320, 640, 1280]
+    sizes = [10, 100, 1000, 10000, 50000, 100000]
     repeats = 5
 
     # casos de teste do seu gerador

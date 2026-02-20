@@ -9,20 +9,20 @@ def merge_sort(arr: list, counter: list) -> list:
       - counter[0] soma 1 para cada linha/checagem executada (critério uniforme).
     """
 
-    # --- Caso base: lista de tamanho 0 ou 1 já está ordenada ---
+    # Caso base - lista de tamanho 0 ou 1 já está ordenada
     counter[0] += 1  # conta a execução do IF (checagem do caso base)
     if len(arr) <= 1:
         counter[0] += 1  # conta o return do caso base
         return arr
 
-    # --- DIVIDE: calcula o meio e cria as duas metades ---
+    # Divide - calcula o meio e cria as duas metades
     counter[0] += 1  # conta a atribuição do meio
     mid = len(arr) // 2
 
-    counter[0] += 1  # conta a criação (fatiamento) da metade esquerda
+    counter[0] += 1  # conta a criação (fatia) da metade esquerda
     left_half = arr[:mid]
 
-    counter[0] += 1  # conta a criação (fatiamento) da metade direita
+    counter[0] += 1  # conta a criação (fatia) da metade direita
     right_half = arr[mid:]
 
     # --- CONQUISTA: ordena cada metade recursivamente ---
