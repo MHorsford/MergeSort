@@ -1,19 +1,56 @@
 import random as rd
 
 class ListGerator:
+    """
+        Gerador de listas para os cenários de teste do experimento.
+
+        Observações:
+            - O gerador fixa a semente do RNG em "seed(1)" no construtor, tornando a
+            sequência de listas reprodutível entre execuções.
+            - Os métodos retornam novas listas (não modificam listas externas).
+    """
 
     def __init__(self):
+        """
+            Inicializa o gerador e fixa a semente pseudo-aleatória para reprodutibilidade.
+        """
         rd.seed(1)
 
     def ordered(self, size: int) -> list:
         """
-            - Gera uma lista ordenada
+            Gera uma lista ordenada em ordem crescente.
+
+            Parâmetros:
+            
+                size : int
+                    Tamanho da lista.
+
+            Retorna:
+        
+                list
+                    Lista com "size" inteiros no intervalo [0, size], ordenada crescentemente.
         """
         return sorted([rd.randint(0, size) for _ in range(size)])
 
     def disordered(self, size: int) -> list:
         """
-            - gera uma lista desordenada
+            Gera uma lista desordenada (pseudo-aleatória), evitando casos degenerados.
+
+            Estratégia:
+                - Gera uma lista com "size" inteiros no intervalo [0, size].
+                - Se por acaso a lista gerar todos os elementos iguais (ex.: [2,2,2]) e
+                "size > 1", altera o último elemento para garantir pelo menos 2 valores distintos.
+                - Se por acaso a lista gerar já ordenada, embaralha até deixar de estar ordenada.
+
+            Parâmetros:
+            
+                size : int
+                    Tamanho da lista.
+
+            Retorna:
+            
+                list
+                    Lista pseudo-aleatória que, com as correções acima, tende a não estar ordenada.
         """
         list_ = [rd.randint(0, size) for _ in range(size)]
         
@@ -29,8 +66,17 @@ class ListGerator:
         return list_
     
     def reverse_ordered(self, size: int) -> list:
-        """ 
-            - Gera uma lista em ordem decrescente 
+        """
+            Gera uma lista em ordem decrescente (reversa).
+
+            Parâmetros:
+                size : int
+                    Tamanho da lista.
+
+            Retorna:
+            
+                list
+                    Lista com "size" inteiros no intervalo [0, size], ordenada decrescentemente.
         """
         return sorted([rd.randint(0, size) for _ in range(size)], reverse=True)
         
@@ -38,10 +84,22 @@ class ListGerator:
 
     def with_repetition(self, size: int) -> list:
         """
-            - Gera uma lista com repetição.
-            - Garantimos que haja no minimo 1 elemento repetido ao definir que o 
-            intervalo dos elementos vai de 0 ao (tamanho da lista - 1)
-            - Não gera lista vazia, sempre será um range de 1.
+            Gera uma lista com repetição garantida (sempre que "size > 1").
+
+            Estratégia:
+                - Usa rd.choices em um intervalo menor que o tamanho, forçando colisões
+                (valores repetidos) quando "size > 1".
+                - Para "size <= 1", usa um intervalo mínimo para evitar range vazio.
+
+            Parâmetros:
+            
+                size : int
+                    Tamanho da lista.
+
+            Retorna:
+
+                list
+                    Lista de tamanho `size` contendo valores repetidos (quando possível).
         """
         list_ = rd.choices(range(size - 1 if size > 1 else 1), k=size) 
 
@@ -49,17 +107,47 @@ class ListGerator:
     
     def mixed_signs(self, size: int) -> list:
         """
-            - Gera uma lista com números positivos e negativos
+            Gera uma lista com valores positivos e negativos.
+
+            Parâmetros:
+            
+                size : int
+                    Tamanho da lista.
+
+            Retorna:
+            
+                list
+                    Lista com "size" inteiros no intervalo [-size, size].
         """
         return [rd.randint(-size, size) for _ in range(size)]
     
     def all_equal(self, size: int, value: int = 100) -> list:
         """
-            Gera uma lista onde todos os elementos são iguais 
+            Gera uma lista onde todos os elementos são iguais.
+
+            Parâmetros:
+            
+                size : int
+                    Tamanho da lista.
+                value : int, default=100
+                    Valor repetido em todas as posições.
+
+            Retorna:
+            
+                list
+                    Lista de tamanho `size` onde todos os elementos são `value`.
         """
         return [value] * size
     
     def empty(self) -> list:
+        """
+            Gera uma lista vazia.
+
+            Retorna:
+            
+                list
+                    Lista vazia [].
+        """
         return []
 
 if __name__ == '__main__':

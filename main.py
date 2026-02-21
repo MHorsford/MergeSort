@@ -7,9 +7,34 @@ from merge_sort_bottom_up import merge_sort_bottom_up
 
 def run_and_count(alg_fn, base_list):
     """
-    Roda um algoritmo de ordenação instrumentado e retorna:
-      - resultado ordenado
-      - contador de "linhas/checagens executadas"
+        Executa um algoritmo de ordenação *instrumentado* e devolve:
+            (1) a lista ordenada (resultado do algoritmo)
+            (2) a contagem total de "linhas/checagens" acumulada no contador
+
+        Parâmetros:
+
+            alg_fn : callable
+                Função do algoritmo de ordenação. Espera-se que tenha a assinatura:
+                    alg_fn(lista, counter) -> lista_ordenada
+                onde `counter` é uma lista com um inteiro (ex.: [0]) usada para somar
+                incrementos durante a execução.
+            base_list : list
+                Lista base de entrada. Ela NÃO é modificada diretamente; o método cria
+                uma cópia antes de chamar o algoritmo.
+
+        Retorno:
+        
+            tuple[list, int]
+                result : list
+                    Lista ordenada retornada por "alg_fn".
+                count : int
+                    Valor final do contador (quantidade de linhas/checagens executadas).
+
+        Observações:
+
+            - A cópia "data = base_list[:]" evita que uma execução altere a entrada
+            que será usada por outro algoritmo na mesma repetição.
+            - A métrica medida NÃO é tempo de CPU; é uma contagem instrumentada no código.
     """
     counter = [0]
     data = base_list[:]  # copia para não alterar a base
@@ -19,9 +44,44 @@ def run_and_count(alg_fn, base_list):
 
 def benchmark_case(case_name, gen_fn, sizes, repeats, print_each_run=True):
     """
-    Para um tipo de entrada (ex.: desordenada), executa a bateria e:
-      - imprime no terminal as contagens
-      - devolve médias por N (para plotar)
+        Executa a bateria de testes para um determinado cenário de entrada
+        (ex.: "Desordenada", "Ordenada", etc.) e retorna as médias das contagens
+        para cada tamanho N, comparando:
+            - Merge Sort recursivo
+            - Merge Sort bottom-up (iterativo)
+
+        Parâmetros:
+            
+            case_name : str
+                Nome do caso/cenário (usado para impressão e título de gráfico).
+            gen_fn : callable
+                Função geradora de listas do cenário. Deve aceitar um inteiro N e
+                retornar uma lista de tamanho N:
+                    gen_fn(N) -> list
+            sizes : list[int]
+                Tamanhos de entrada testados (ex.: [10, 100, 1000, ...]).
+            repeats : int
+                Número de repetições por tamanho N (ex.: 5).
+            print_each_run : bool, default=True
+                Se True, imprime a contagem de cada repetição individualmente.
+                Se False, imprime apenas o resumo (média, min e max) por N.
+
+        Retorno:
+        
+            tuple[list[float], list[float]]
+                rec_means : lista de médias do Merge Sort recursivo para cada N.
+                it_means  : lista de médias do Merge Sort bottom-up para cada N.
+
+        Procedimento:
+
+            Para cada N em "sizes":
+                1) executa "repeats" vezes:
+                    - gera lista base com "gen_fn(N)"
+                    - roda merge_sort (recursivo) e merge_sort_bottom_up
+                    - valida as saídas comparando com "sorted(base)"
+                    - acumula contagens rec_counts e it_counts
+                2) calcula média, mínimo e máximo
+                3) armazena as médias para posterior plotagem
     """
     rec_means = []
     it_means = []
@@ -70,6 +130,27 @@ def benchmark_case(case_name, gen_fn, sizes, repeats, print_each_run=True):
 
 
 def plot_case(sizes, rec_means, it_means, title):
+    """
+        Gera um gráfico (matplotlib) comparando as médias de linhas/checagens
+        para os dois algoritmos em função do tamanho de entrada N.
+
+        Parâmetros:
+            sizes : list[int]
+                Tamanhos N usados no eixo X.
+            rec_means : list[float]
+                Médias do Merge Sort recursivo para cada N.
+            it_means : list[float]
+                Médias do Merge Sort bottom-up para cada N.
+            title : str
+                Título do gráfico (inclui o nome do cenário).
+
+        Saída:
+
+            Abre uma figura com:
+                - linha do recursivo
+                - linha do bottom-up
+                - grade, legenda e rótulos de eixos
+    """
     plt.figure()
     plt.plot(sizes, rec_means, marker="o", label="Merge Sort recursivo")
     plt.plot(sizes, it_means, marker="o", label="Merge Sort bottom-up")
@@ -81,6 +162,18 @@ def plot_case(sizes, rec_means, it_means, title):
 
 
 def main():
+    """
+        Função principal do experimento.
+
+        Etapas:
+            1) instancia o gerador de listas (ListGerator)
+            2) define tamanhos "sizes" e número de repetições "repeats"
+            3) define os cenários (nome, função geradora)
+            4) para cada cenário:
+                - executa benchmark_case -> obtém médias por N
+                - plota o gráfico do cenário
+            5) exibe todos os gráficos com plt.show()
+    """
     lg = ListGerator()
 
     # tamanhos e repetições (ajuste conforme seu PC/tempo)
